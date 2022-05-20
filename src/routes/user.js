@@ -15,8 +15,12 @@ router.post("/users", (req, res) => {
   // get all users
   // usar async - await que es mas legible
 router.get("/users", async (req, res) => {
+  try{
     const result = await userSchema.find();
     res.json(result);
+  } catch (e){
+    return res.status(500).json({mensaje: e})
+  }
 });
 
 // get a user

@@ -2,7 +2,6 @@
 //Ingresar
 POST http://localhost:9000/api/users HTTP/1.1
 Content-Type: application/json
-
 {
   "name": "Cesar",
   "email": "algo@email.com",
@@ -25,7 +24,6 @@ DELETE http://localhost:9000/api/users/627d17b8eb4f45acdb4f9d4f HTTP/1.1
 //Actualizar
 PUT http://localhost:9000/api/users/627d718ce7d4e0a42a3f2959 HTTP/1.1
 Content-Type: application/json
-
 {
   "name": "Jorge",
   "email": "algo@email.com",
@@ -39,3 +37,13 @@ Content-Type: application/json
 ###
 //Consultar tipos de equipos
 GET http://localhost:9000/api/tipoEquipos HTTP/1.1
+
+//Ingresar tipoEquipo
+###
+POST http://localhost:9000/api/tipoEquipos HTTP/1.1
+Content-Type: application/json
+{
+  "name": "Computo",
+  "estado": true,
+  "usuario": "627d718ce7d4e0a42a3f2959"
+}

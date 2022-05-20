@@ -18,6 +18,17 @@ router.get("/tipoEquipos", async (req, res) => {
     res.json(result);
 });
 
+  // get equipos activos con usuario activo
+  router.get("/tipoEquiposUserAtice", async (req, res) => {
+    const query ={estado: true};
+    let result = await userSchema.find(query).populate({
+      path: 'usuario',
+      match:{estado:true}
+    });
+    result.filter(t=>{t.estado !=null})
+    res.json(result);
+});
+
 // get a one
 router.get("/tipoEquipos/:id", (req, res) => {
   const { id } = req.params;
