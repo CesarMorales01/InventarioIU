@@ -3,4 +3,4 @@
 ## 3. npm install
 ## 4. create ".env" file, set port and MONGODB_URI vars
 
-## 5. npm node server
+## 5. npm node server.
