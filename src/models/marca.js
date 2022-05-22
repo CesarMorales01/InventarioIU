@@ -1,17 +1,14 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
+const marcaSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    required: true
-  },
   estado: {
     type: Boolean,
-    required: true
+    required: true,
+    default: true
   },
   fechaCreacion: {
     type: Date,
@@ -20,7 +17,7 @@ const userSchema = mongoose.Schema({
   fechaActualizacion: {
     type: Date,
     default: new Date()
-  },
+  }
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Marca', marcaSchema);

@@ -1,54 +1,20 @@
 const express = require("express");
-const userSchema = require("../models/user");
-
+const { createUsuario , getAllUser, getUserById, deleteUsuarioID, actualizarUsuario} = require('../controllers/usuario');
 const router = express.Router();
 
 // create user
-// no he usado async ya que me parece importante imprimir si hay un error....
-router.post("/users", (req, res) => {
-    const user = userSchema(req.body);
-    user.save()
-      .then((data) => res.json(data))
-      .catch((error) => res.json({ message: error }));
-  });
+router.post("/", createUsuario );
 
   // get all users
-  // usar async - await que es mas legible
-router.get("/users", async (req, res) => {
-  try{
-    const result = await userSchema.find();
-    res.json(result);
-  } catch (e){
-    return res.status(500).json({mensaje: e})
-  }
-});
+router.get("/", getAllUser);
 
 // get a user
-router.get("/users/:id", (req, res) => {
-  const { id } = req.params;
-  userSchema
-    .findById(id)
-    .then((data) => res.json(data))
-    .catch((error) => res.json({ message: error }));
-});
+router.get("/:id", getUserById);
 
 // delete a user
-router.delete("/users/:id", (req, res) => {
-  const { id } = req.params;
-  userSchema
-    .remove({ _id: id })
-    .then((data) => res.json(data))
-    .catch((error) => res.json({ message: error }));
-});
+router.delete("/:id", deleteUsuarioID);
 
 // update a user
-router.put("/users/:id", (req, res) => {
-  const { id } = req.params;
-  const { name, email, estado, fechaCreacion, fechaActualizacion } = req.body;
-  userSchema
-    .updateOne({ _id: id }, { $set: { name, email, estado, fechaCreacion, fechaActualizacion } })
-    .then((data) => res.json(data))
-    .catch((error) => res.json({ message: error }));
-});
+router.put("/:id", actualizarUsuario);
 
 module.exports = router;

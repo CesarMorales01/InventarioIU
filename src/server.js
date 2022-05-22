@@ -5,6 +5,10 @@ const path = require("path");
 require("dotenv").config();
 const userRoute = require("./routes/user");
 const tiposEquipo = require('./routes/tipoEquipo');
+const marcaRoute = require("./routes/marca");
+const estadoRoute = require("./routes/estado");
+const inventarios = require('./routes/inventario');
+//const fileUpload = require('express-fileupload');
 // settings
 const app = express();
 const port = process.env.PORT || 9000;
@@ -13,11 +17,19 @@ const port = process.env.PORT || 9000;
 app.use(express.urlencoded({extended: false}));
 app.use(morgan('dev'));
 app.use(express.json());
-
+/*
+app.use(fileUpload({
+  useTempFiles : true,
+  tempFileDir : '/tmp/'
+}));
+*/
 
 // routes
-app.use("/api", userRoute);
-app.use('/api', tiposEquipo);
+app.use('/api/usuarios', userRoute);
+app.use('/api/tiposequipo', tiposEquipo);
+app.use('/api/marca', marcaRoute);
+app.use('/api/estado', estadoRoute);
+app.use('/api/inventarios', inventarios);
 // static files
 // carga el index html pero no logro que lea react/jsx...
 app.use(express.static(path.join(__dirname, 'public')));
