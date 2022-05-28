@@ -1,19 +1,13 @@
 const { request, response } = require('express');
 const TipoEquipo = require('../models/tipoEquipo');
-const Usuario = require('../models/user');
+const usuarioModel = require('../models/user');
 
 /**
- * Consultar todos tipos de equipo activos con usuario activo
+ * Consulta solo los tipos de equipo activos
  */
-
-const getTiposEquipoUserActivo = async (req, res = response) => {
-    const query = { estado: true}; // estado del equipo
-    
-    let tiposEquipoBD = await TipoEquipo.find(query).populate({
-        path: 'Usuario',
-        match: { estado: true },
-    });
-    tiposEquipoBD = tiposEquipoBD.filter(t => t.usuario != null);
+ const getTiposEquipoActive = async (req, res = response) => {
+    const query = {"estado": true};    
+    const tiposEquipoBD = await TipoEquipo.find(query);
     res.json(tiposEquipoBD);
 }
 
@@ -89,7 +83,7 @@ const createTipoEquipo = async (req = request, res = response) => {
     if(tipoEquipoBD){// ya existe el equipo
         return res.status(400).json({msg: 'Ya existe tipo equipo'});
     }
-    const usuarioBD = await Usuario.findOne({ email });
+    const usuarioBD = await usuarioModel.findOne({ email });
     if(!usuarioBD){// no existe usuario
         return res.status(404).json({msg: 'No existe usuario'});
     }
@@ -102,4 +96,4 @@ const createTipoEquipo = async (req = request, res = response) => {
     res.status(201).json(tipoEquipo);
 }
 
-module.exports = { getTiposEquipo, getTiposEquipoUserActivo, createTipoEquipo, getTiposEquipoById, updateTipoEquipoById, deleteTipoEquipoByID};
+module.exports = { getTiposEquipo, getTiposEquipoActive, createTipoEquipo, getTiposEquipoById, updateTipoEquipoById, deleteTipoEquipoByID};

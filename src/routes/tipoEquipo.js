@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getTiposEquipo, getTiposEquipoUserActivo, createTipoEquipo, getTiposEquipoById, updateTipoEquipoById, deleteTipoEquipoByID } = require('../controllers/tipoEquipo');
+const { getTiposEquipo, getTiposEquipoActive, createTipoEquipo, getTiposEquipoById, updateTipoEquipoById, deleteTipoEquipoByID } = require('../controllers/tipoEquipo');
 
 const router = Router();
 
@@ -7,7 +7,7 @@ const router = Router();
  * btiene todos los tipos de equipos los cuales los usuarios
  * son activos
  */
-router.get('/user-activo', getTiposEquipoUserActivo);
+router.get('/active', getTiposEquipoActive);
 
 /**
  * Obtiene todos los tipos de equipos

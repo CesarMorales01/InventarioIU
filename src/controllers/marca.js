@@ -1,5 +1,4 @@
 const { request, response } = require('express');
-
 const marcaModel = require('../models/marca');
 
 const createMarca = async (req = request, res = response) => {
@@ -16,6 +15,16 @@ const createMarca = async (req = request, res = response) => {
 const getAllBrands = async (req = request, res = response) => {
     try{
         const result = await marcaModel.find();
+        res.json(result);
+    } catch (e){
+        return res.status(500).json({mensaje: e})
+    }
+}
+
+const getMarcasActivas = async (req = request, res = response) => {
+    try{
+        const query ={"estado": true}
+        const result = await marcaModel.find(query);
         res.json(result);
     } catch (e){
         return res.status(500).json({mensaje: e})
@@ -61,4 +70,4 @@ const actualizarMarca = async (req = request, res = response) => {
     }
 }
 
-module.exports = { createMarca , getAllBrands, getMarcaById, deleteMarcaID, actualizarMarca }
+module.exports = { createMarca , getAllBrands, getMarcaById, deleteMarcaID, actualizarMarca, getMarcasActivas }

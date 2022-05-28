@@ -37,6 +37,10 @@ Content-Type: application/json
 //Consultar todos los tipos de equipos
 GET http://localhost:9000/api/tiposequipo HTTP/1.1
 
+###
+//Consultar solo los tipos de equipos activos
+GET http://localhost:9000/api/tiposequipo/active HTTP/1.1
+
 //Ingresar tipoEquipo
 ###
 POST http://localhost:9000/api/tiposequipo HTTP/1.1
@@ -64,12 +68,8 @@ Content-Type: application/json
 
 ###
 //Consultar tipoequipo por id
-GET http://localhost:9000/api/tiposequipo/6287ccaf977f1e058cd218cd HTTP/1.1
+GET http://localhost:9000/api/tiposequipo/628833636146cb5b86071c55 HTTP/1.1
 
-
-###
-//Consultar los tipos de equipos los cuales los usuario son activos
-GET http://localhost:9000/api/tiposequipo/user-activo HTTP/1.1
 
 ###
 //Borrar tipo equipo
@@ -89,6 +89,10 @@ Content-Type: application/json
 GET http://localhost:9000/api/marca HTTP/1.1
 
 ###
+//Consultar solo marcas activas
+GET http://localhost:9000/api/marca/active HTTP/1.1
+
+###
 //Consultar marca por id
 GET http://localhost:9000/api/marca/62890c1c20165f0aeb391246 HTTP/1.1
 
@@ -103,7 +107,7 @@ Content-Type: application/json
 
 {
   "name": "Xiaomi",
-  "estado": true
+  "estado": false
 }
 
 ###
@@ -112,17 +116,21 @@ POST http://localhost:9000/api/estado/ HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Averiado"
+  "name": "En bodega"
 }
 
 ###
 //Consultar todos los estados
 GET http://localhost:9000/api/estado HTTP/1.1
 
+###
+//Consultar solo los estados con estado true
+GET http://localhost:9000/api/estado/active HTTP/1.1
+
 
 ###
 //Consultar estado por id
-GET http://localhost:9000/api/estado/628a9d7411cdd84a1b467d76 HTTP/1.1
+GET http://localhost:9000/api/estado/62891097b29019c762fe2fd0 HTTP/1.1
 
 
 ###
@@ -131,10 +139,61 @@ DELETE http://localhost:9000/api/estado/628a9d7411cdd84a1b467d76 HTTP/1.1
 
 ###
 //Actualizar estado
-PUT http://localhost:9000/api/estado/6289121ba230793d810cba96 HTTP/1.1
+PUT http://localhost:9000/api/estado/628aaeb62629f675c2864509 HTTP/1.1
 Content-Type: application/json
 
 {
   "name": "En Bodega",
   "estado": false
 }
+
+###
+//Ingresar inventario
+POST http://localhost:9000/api/inventarios/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "serial": "3",
+    "modelo": "2025",
+    "descripcion": "Laptop verde",
+    "color": "verde",
+    "precio": 2500000,
+    "usuario": "627d718ce7d4e0a42a3f2959",
+    "marca": "628a9e552602d10138592b33",
+    "estado": "62891097b29019c762fe2fd0",
+    "tipoEquipo": "628833636146cb5b86071c55"
+}
+
+
+
+###
+//Consultar todo el inventario
+GET http://localhost:9000/api/inventarios HTTP/1.1
+
+
+###
+//Consultar inventario por id
+GET http://localhost:9000/api/inventarios/62912ee7adb265d2a5344702 HTTP/1.1
+
+###
+//Borrar inventario
+DELETE http://localhost:9000/api/inventarios/629131e4adf40eb9ba6d9ec9 HTTP/1.1
+
+
+###
+//Actualizar inventario
+PUT http://localhost:9000/api/inventarios/62912ee7adb265d2a5344702 HTTP/1.1
+Content-Type: application/json
+
+{
+    "serial": "0",
+    "modelo": "2020",
+    "descripcion": "Laptop naranja",
+    "color": "naranja",
+    "precio": 2500000,
+    "usuario": "627d718ce7d4e0a42a3f2959",
+    "marca": "628a9e552602d10138592b33",
+    "estado": "62891097b29019c762fe2fd0",
+    "tipoEquipo": "628833636146cb5b86071c55"
+}
+

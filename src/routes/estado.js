@@ -1,20 +1,23 @@
 const express = require("express");
-const {  getEstados, getEstadoById, createEstado, updateEstadoById, deleteEstado} = require('../controllers/estadoEquipo');
+const {  getEstados, getEstadoById, createEstado, updateEstadoById, deleteEstado, getEstadosActive} = require('../controllers/estadoEquipo');
 const router = express.Router();
 
-// create user
+// create estado
 router.post("/", createEstado );
 
-  // get all users
+  // get todos los estados
 router.get("/", getEstados);
 
-// get a user
+ // get estados activos
+ router.get("/active", getEstadosActive);
+
+// get estado
 router.get("/:id", getEstadoById);
 
-// delete a user
+// delete estado
 router.delete("/:id", deleteEstado);
 
-// update a user
+// update estado
 router.put("/:id",  updateEstadoById);
 
 module.exports = router;

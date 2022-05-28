@@ -1,8 +1,10 @@
 const { request, response } = require('express');
 const Inventario = require('../models/inventario');
 const Usuario = require('../models/user');
-
-//const { v4: uuidv4 } = require('uuid');
+const marcaModel = require('../models/marca');
+const estadoModel = require('../models/estadoEquipo');
+const tipoEquipoModel = require('../models/tipoEquipo');
+const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
 
@@ -23,7 +25,7 @@ const getInventarios = async (req, res = response) => {
 }
 
 /**
- * Consultar todos inventarios
+ * Consultar inventario ID
  */
  const getInventarioByID = async (req = request, res = response) => {
     try{
@@ -39,12 +41,28 @@ const getInventarios = async (req, res = response) => {
 }
 
 /**
+ * Borrar inventario
+ */
+ const deleteInventarioId = async (req = request, res = response) => {
+    try{
+        const id = req.params.id;
+        const inv = await Inventario.findByIdAndDelete(id);
+        res.status(204).json(inv);
+    }catch(e){
+        return res.status(500).json({
+            error: e
+        });
+    }
+}
+
+/**
  * crea un inventario
  */
  const createInventario = async (req = request, res = response) => {
-    try{
+     try{
         const { serial, modelo, usuario, marca, estado, tipoEquipo } = req.body;
-
+       // const {...data}= 
+       // check serial y modelo no se repitan
         const inventarioBD = await Inventario.findOne({
             $or: [
                 {serial}, {modelo}
@@ -63,27 +81,57 @@ const getInventarios = async (req, res = response) => {
                 msj: 'No existe usuario'
             })
         }
-        // TAREA: Validar que marca, estado y tipo existan y estén activos
+        // check marca exista y este activa
+        const queryMarca ={"_id": marca, "estado": true}
+        const marcaBD = await marcaModel.findOne(queryMarca);
+        if(!marcaBD){
+            return res.status(400).json({
+                msj: 'No existe la marca o esta inactiva!'
+            })
+        }
+         // check estado existe y este activo
+         const queryEstado ={"_id": estado, "estado": true}
+         const estadoBD = await estadoModel.findOne(queryEstado);
+
+         if(!estadoBD){
+             return res.status(400).json({
+                 msj: 'No existe el estado  o esta inactivo!'
+             })
+         }
+        // check tipo equipo existe y este activo
+        const queryTipo ={"_id": tipoEquipo, "estado": true}
+        
+        const tipoBD = await tipoEquipoModel.findOne(queryTipo);
+        console.log(queryTipo)
+        if(!tipoBD){
+            return res.status(400).json({
+                msj: 'No existe el tipo de equipo  o esta inactivo!'
+            })
+        } 
 
         const data = req.body;
-
+        data.usuario=usuarioBD._id
+        data.marca= marcaBD._id
+        data.estado=estadoBD._id 
+        data.tipoEquipo=tipoBD._id   
+    
         const inventario = new Inventario(data);
         await inventario.save();
         res.status(201).json(inventario);
-    }catch(e){
+     }catch(e){
         return res.status(500).json({
             error: e
         });
     }
 }
 
+
 const updateInventario = async (req = request, res = response) => {
     try{
         const { id } = req.params;
         const data = req.body;// destructuring, spread (...)
-    
         const inventarioBD = await Inventario.findOne({ _id: id});
-       // TODO: VALIDAR QUE EXISTEN Y ESTAN ACTIVOS: ESTADO, USUARIO, MARCA, ...
+
        if(!inventarioBD){
         return res.status(400).json({
             msj: 'No existe este inventario'
@@ -106,7 +154,7 @@ const uploadImage = async (req = request, res = response) => {
             msj: 'No existe en inventario'
         });
     }
-    if(!req.files || Object.keys(req.files) || req.files.foto){
+    if(!req.files || Object.keys(req.files) == 0 || !req.files.foto){
         return res.status(400).json({
             msj: 'No se está subiendo una foto'
         });
@@ -121,7 +169,44 @@ const uploadImage = async (req = request, res = response) => {
             msj: 'Extension no aceptada'
         });
     }
-    const nombreTemp = `${uuidv4()}.${extension}`; 
+    const nombreTemp = `${uuidv4()}.${extension}`;
+    const rutaSubida = path.join(__dirname, '../uploads', nombreTemp);
+    //uploads/dadasdasdada.jpg
+    foto.mv(rutaSubida, e => {
+        if(e){
+            return res.status(500).json({ error: e});
+        }
+    });
+    const data = {};
+    data.foto = nombreTemp;
+    console.log("foto"+data.foto)
+    const inv = await Inventario.findByIdAndUpdate(id, data, {new : true});
+    if(!inv){
+        return res.status(400).json({ error: 'Error al actualizar'});
+    }
+    res.status(201).json({msj: 'Se subió la foto'});
 }
 
-module.exports = { getInventarios, getInventarioByID, createInventario, updateInventario, uploadImage};
+/**
+ * Consultar foto
+ */
+ const getFoto = async (req = request, res = response) => {
+    try{
+        const { id } = req.params;
+        const inventarioBD = await Inventario.findOne({ _id: id });
+        if(!inventarioBD){
+            return res.status(400).json({ error: 'No existe en inventario'});
+        }
+        const nombreFoto = inventarioBD.foto;
+        const rutaImg = path.join(__dirname, '../uploads', nombreFoto);
+        if(fs.existsSync(rutaImg)){
+            res.sendFile(rutaImg);
+        }
+    }catch(e){
+        return res.status(500).json({
+            error: e
+        })
+    }
+}
+
+module.exports = { getInventarios, getInventarioByID, createInventario, updateInventario, uploadImage, deleteInventarioId, getFoto};

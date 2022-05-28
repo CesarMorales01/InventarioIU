@@ -2,9 +2,23 @@ const { request, response } = require('express');
 const Estado = require('../models/estadoEquipo');
 
 /**
+ * Consultar todos los estados
+ */
+ const getEstados = async (req, res = response) => {
+    try{
+        const estadosBD = await Estado.find();
+        res.json(estadosBD);
+    }catch(e){
+        return res.status(500).json({
+            error: e
+        })
+    }
+}
+
+/**
  * Consultar todos estados activos
  */
-const getEstados = async (req, res = response) => {
+const getEstadosActive = async (req, res = response) => {
     try{
         const query = { estado: true}; // estado del equipo
         const estadosBD = await Estado.find(query);
@@ -22,7 +36,7 @@ const getEstados = async (req, res = response) => {
 const getEstadoById = async (req = request, res = response) => {
     try{
         const { id } = req.params;
-        const query = { estado: true, _id: id}; 
+        const query = {_id: id}; 
         const estadosBD = await Estado.findOne(query);
         res.json(estadosBD);
     }catch(e){
@@ -96,4 +110,4 @@ const deleteEstado = async (req = request, res = response) => {
 }
 
 
-module.exports = { getEstados, getEstadoById, createEstado, updateEstadoById, deleteEstado };
+module.exports = { getEstados, getEstadoById, createEstado, updateEstadoById, deleteEstado, getEstadosActive };

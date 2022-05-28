@@ -29,7 +29,7 @@ const InventarioSchema = Schema({
     },
     usuario: {
         type: Schema.Types.ObjectId,
-        ref: 'Usuario',
+        ref: 'User',
         required: true
     },
     marca: {
@@ -50,3 +50,18 @@ const InventarioSchema = Schema({
 });
 
 module.exports = model('Inventario', InventarioSchema);
+
+/*
+{
+    "serial": "",
+    "modelo": "",
+    "descripcion": "",
+    "foto": "",
+    "color": "",
+    "fechaCompra": "",
+    "precio", 0,
+    "usuario": "",
+    "marca": "",
+    "estado": "",
+    "tipoEquipo": ""
+}*/

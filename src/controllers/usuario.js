@@ -1,5 +1,4 @@
 const { request, response } = require('express');
-
 const usuarioModel = require('../models/user');
 
 const createUsuario = async (req = request, res = response) => {
@@ -16,6 +15,18 @@ const createUsuario = async (req = request, res = response) => {
 const getAllUser = async (req = request, res = response) => {
     try{
         const result = await usuarioModel.find();
+        res.json(result);
+    } catch (e){
+        return res.status(500).json({mensaje: e})
+    }
+}
+
+// consultar solo usuarios activos
+
+const getAllUserActive = async (req = request, res = response) => {
+    try{
+        const query ={"estado": true}
+        const result = await usuarioModel.find(query);
         res.json(result);
     } catch (e){
         return res.status(500).json({mensaje: e})
@@ -61,4 +72,4 @@ const actualizarUsuario = async (req = request, res = response) => {
     }
 }
 
-module.exports = { createUsuario , getAllUser, getUserById, deleteUsuarioID, actualizarUsuario }
+module.exports = { createUsuario , getAllUser, getUserById, deleteUsuarioID, actualizarUsuario, getAllUserActive }

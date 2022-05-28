@@ -8,7 +8,7 @@ const tiposEquipo = require('./routes/tipoEquipo');
 const marcaRoute = require("./routes/marca");
 const estadoRoute = require("./routes/estado");
 const inventarios = require('./routes/inventario');
-//const fileUpload = require('express-fileupload');
+const fileUpload = require('express-fileupload');
 // settings
 const app = express();
 const port = process.env.PORT || 9000;
@@ -17,12 +17,12 @@ const port = process.env.PORT || 9000;
 app.use(express.urlencoded({extended: false}));
 app.use(morgan('dev'));
 app.use(express.json());
-/*
+
 app.use(fileUpload({
   useTempFiles : true,
   tempFileDir : '/tmp/'
 }));
-*/
+
 
 // routes
 app.use('/api/usuarios', userRoute);
