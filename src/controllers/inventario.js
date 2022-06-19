@@ -220,8 +220,13 @@ const uploadImage = async (req = request, res = response) => {
         }
         const nombreFoto = inventarioBD.foto;
         const rutaImg = path.join(__dirname, '../uploads', nombreFoto);
-        console.log(rutaImg)
-        res.sendFile(rutaImg);
+        if(nombreFoto==''){
+            const rutaImg1 = path.join(__dirname, '../uploads', 'noPreview.jpg');
+            res.sendFile(rutaImg1);
+        }else{
+            res.sendFile(rutaImg);
+        }
+        
     }catch(e){
         return res.status(500).json({
             error: e
