@@ -50,15 +50,18 @@ const getEstadoById = async (req = request, res = response) => {
  * crea un estado
  */
  const createEstado = async (req = request, res = response) => {
+     console.log(req)
     try{
         const nombre = req.body.name;
+        const estadoBody=req.body.estado
         const query = { name: nombre}; 
         const estadoBD = await Estado.findOne(query);
         if(estadoBD){
             return res.status(400).json({msg: 'Ya existe estado'});
         }
         const datos = {
-            name: nombre
+            name: nombre,
+            estado: estadoBody
         };
         const estado = new Estado(datos); 
         await estado.save();

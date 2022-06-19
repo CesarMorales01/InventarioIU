@@ -63,22 +63,30 @@ const getInventarios = async (req, res = response) => {
         const { serial, modelo, usuario, marca, estado, tipoEquipo } = req.body;
        // const {...data}= 
        // check serial y modelo no se repitan
-        const inventarioBD = await Inventario.findOne({
-            $or: [
-                {serial}, {modelo}
-            ]
+        const serialBD = await Inventario.findOne({
+            "serial":serial    
         });
-        if(inventarioBD){
+        if(serialBD){
             return res.status(400).json({
-                msj: 'Ya existe serial o modelo'
+                msj: 'Ya existe serial!'
             })
         }
+        /*
+        const modeloBD = await Inventario.findOne({
+            "modelo":modelo    
+        });
+        if(modeloBD){
+            return res.status(400).json({
+                msj: 'Ya existe el modelo!'
+            })
+        }
+        */
         const usuarioBD = await Usuario.findOne({
             _id: usuario, estado: true
         })
         if(!usuarioBD){
             return res.status(400).json({
-                msj: 'No existe usuario'
+                msj: 'No existe usuario!'
             })
         }
         // check marca exista y este activa
@@ -86,7 +94,7 @@ const getInventarios = async (req, res = response) => {
         const marcaBD = await marcaModel.findOne(queryMarca);
         if(!marcaBD){
             return res.status(400).json({
-                msj: 'No existe la marca o esta inactiva!'
+                msj: 'No existe la marca!'
             })
         }
          // check estado existe y este activo
@@ -95,17 +103,16 @@ const getInventarios = async (req, res = response) => {
 
          if(!estadoBD){
              return res.status(400).json({
-                 msj: 'No existe el estado  o esta inactivo!'
+                 msj: 'No existe el estado!'
              })
          }
         // check tipo equipo existe y este activo
         const queryTipo ={"_id": tipoEquipo, "estado": true}
         
         const tipoBD = await tipoEquipoModel.findOne(queryTipo);
-        console.log(queryTipo)
         if(!tipoBD){
             return res.status(400).json({
-                msj: 'No existe el tipo de equipo  o esta inactivo!'
+                msj: 'No existe el tipo de equipo!'
             })
         } 
 
@@ -114,7 +121,6 @@ const getInventarios = async (req, res = response) => {
         data.marca= marcaBD._id
         data.estado=estadoBD._id 
         data.tipoEquipo=tipoBD._id   
-    
         const inventario = new Inventario(data);
         await inventario.save();
         res.status(201).json(inventario);
@@ -128,8 +134,21 @@ const getInventarios = async (req, res = response) => {
 
 const updateInventario = async (req = request, res = response) => {
     try{
-        const { id } = req.params;
-        const data = req.body;// destructuring, spread (...)
+        const id = req.params.id
+        const { serial, modelo, descripcion, fechaCompra, color, precio, usuario, marca, estado, tipoEquipo } = req.body;
+        
+        const data = {
+            serial: serial,
+            modelo: modelo,
+            descripcion: descripcion,
+            fechaCompra: fechaCompra,
+            color: color,
+            precio: precio,
+            usuario: usuario,
+            marca: marca,
+            estado: estado,
+            tipoEquipo: tipoEquipo
+        }
         const inventarioBD = await Inventario.findOne({ _id: id});
 
        if(!inventarioBD){
@@ -148,6 +167,7 @@ const updateInventario = async (req = request, res = response) => {
 
 const uploadImage = async (req = request, res = response) => {
     const { id } = req.params;
+    console.log(req.files)
     const invBD = await Inventario.findOne({ _id: id});
     if(!invBD){
         return res.status(400).json({
@@ -160,6 +180,7 @@ const uploadImage = async (req = request, res = response) => {
         });
     }
     const foto = req.files.foto;
+    console.log(foto)
     // validamos extensiones
     const extensionesAceptadas = ['jpg', 'jpeg', 'png', 'gif'];
     const arrayExtension = foto.name.split('.');
@@ -199,9 +220,8 @@ const uploadImage = async (req = request, res = response) => {
         }
         const nombreFoto = inventarioBD.foto;
         const rutaImg = path.join(__dirname, '../uploads', nombreFoto);
-        if(fs.existsSync(rutaImg)){
-            res.sendFile(rutaImg);
-        }
+        console.log(rutaImg)
+        res.sendFile(rutaImg);
     }catch(e){
         return res.status(500).json({
             error: e

@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 const TipoEquipoSchema = Schema({
-    nombre: {
+    name: {
         type: String,
         required: [true, 'Debe colocar un nombre']
     },
@@ -21,7 +21,7 @@ const TipoEquipoSchema = Schema({
     usuario: {
         type: Schema.Types.ObjectId,
         ref: 'Usuario',
-        required: true
+        required: false
     }
 });
 

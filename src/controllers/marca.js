@@ -3,6 +3,12 @@ const marcaModel = require('../models/marca');
 
 const createMarca = async (req = request, res = response) => {
     try{
+        const nombre=req.body.name
+        const query = { name: nombre}; 
+        const estadoBD = await marcaModel.findOne(query);
+        if(estadoBD){
+            return res.status(400).json({msg: 'Ya existe'});
+        }
         const body = req.body;
         const marca = new marcaModel( body )
         await marca.save();

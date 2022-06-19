@@ -33,17 +33,12 @@ const updateTipoEquipoById = async (req = request, res = response) => {
     try{
         const { id } = req.params;
         const {...data } = req.body;// destructuring, spread (...)
-        const usuarioBD = await Usuario.findOne( { email: data.usuario.email });
-        if(!usuarioBD){
-          return res.status(404).json({msg: 'No existe usuario'});   
-        }
         const tipoEquipoBD = await TipoEquipo.findById(id)
         if(tipoEquipoBD==null){
             return res.status(404).json({
                 msj: "No existe tipo equipo"
             })
         }
-        data.usuario = usuarioBD._id;
         data.fechaCreacion = tipoEquipoBD.fechaCreacion
         data.fechaActualizacion = new Date()
         const tipoEquipo = await TipoEquipo.findByIdAndUpdate(id, data, {new : true});
@@ -77,19 +72,14 @@ const getTiposEquipo = async (req, res = response) => {
  * crea un tipo de eqipo
  */
 const createTipoEquipo = async (req = request, res = response) => {
-    const nombre = req.body.nombre;
-    const email = req.body.usuario.email;
-    const tipoEquipoBD = await TipoEquipo.findOne({ nombre });
+    const name = req.body.name;
+    const tipoEquipoBD = await TipoEquipo.findOne({ name });
     if(tipoEquipoBD){// ya existe el equipo
-        return res.status(400).json({msg: 'Ya existe tipo equipo'});
+        return res.status(400).json({msg: 'Ya existe'});
     }
-    const usuarioBD = await usuarioModel.findOne({ email });
-    if(!usuarioBD){// no existe usuario
-        return res.status(404).json({msg: 'No existe usuario'});
-    }
+
     const datos = {
-        nombre,
-        usuario: usuarioBD._id
+        name
     };
     const tipoEquipo = new TipoEquipo(datos); 
     await tipoEquipo.save();

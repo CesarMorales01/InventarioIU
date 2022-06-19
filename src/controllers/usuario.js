@@ -3,6 +3,19 @@ const usuarioModel = require('../models/user');
 
 const createUsuario = async (req = request, res = response) => {
     try{
+        const nombre = req.body.name;
+        const query = { name: nombre}; 
+        const estadoBD = await usuarioModel.findOne(query);
+        if(estadoBD){
+            return res.status(400).json({msg: 'Ya existe'});
+        }
+        const mail = req.body.email;
+        const query1 = { email: mail}; 
+        const estadoBD1 = await usuarioModel.findOne(query1);
+        if(estadoBD1){
+            return res.status(400).json({msg: 'Ya existe email'});
+        }
+
         const body = req.body;
         const usuario = new usuarioModel( body )
         await usuario.save();
